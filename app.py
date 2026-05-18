@@ -108,7 +108,7 @@ if st.session_state.output_bytes and st.session_state.resumo:
                    '50% da cota' if a in ('ALANIS','ANNA JULIA','ANA CECILIA') else
                    'Prioridade GPM' if a=='BARBARA' else
                    'Prioridade não-trabalhista' if a=='PALOMA' else '🟢 Ativa')
-            rows.append((nome, qtd, obs))
+            rows.append((nome, str(qtd), obs))
     st.dataframe(pd.DataFrame(rows, columns=["Analista","Publicações","Observação"]),
                  hide_index=True, use_container_width=True)
 
