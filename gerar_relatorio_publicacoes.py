@@ -174,7 +174,7 @@ INATIVOS = {normalizar(n) for n in [
     "SCHEILA DE PAULA CORDEIRO","SUZANA MARIA LIMA BARROSO FELIX",
     "TAMIRIS CAMELO MELO LINO","TATIANA HAUBERT","THALYTA MARIA TORQUATO VITOR",
     "THIAGO GURGEL FREIRE LEITE","VICTOR MARTINS BARBOSA",
-    "VICTORIA FERREIRA ALONSO",
+    "VICTORIA FERREIRA ALONSO","VITORIA CAVALCANTE DOS SANTOS",
     "VITORIA DA SILVA FREITAS","WALESSA DIOGENES PEIXOTO DE ALENCAR",
     "WANDERLUCY CORREIA DE ALMEIDA","WELLINGTON PEREIRA DA ROCHA FILHO",
     "WELLINGTON RUBENS","WESLLEY MACEDO DE OLIVEIRA","WVENDEL SENA OLIVEIRA",
@@ -605,6 +605,13 @@ def _build_coord(ws, df, col_resp, mapeamento, d_str, total):
         pct = f'{q/total*100:.1f}%' if total else '0%'
         for ci,val in enumerate([c,q,pct],1):
             _c(ws,i,ci,val,_f(size=9,color='FFFFFFFF'),_fill(h),_a('center' if ci>1 else 'left'))
+    # Linha de TOTAL GERAL
+    tot_row = len(dados) + 3
+    total_coord = sum(q for _,q in dados)
+    pct_total = '100%' if total else '0%'
+    ws.merge_cells(start_row=tot_row,start_column=1,end_row=tot_row,end_column=1)
+    for ci,val in enumerate(['TOTAL GERAL', total_coord, pct_total],1):
+        _c(ws,tot_row,ci,val,_f(bold=True,size=9,color='FFFFFFFF'),FT,_a('center' if ci>1 else 'left'))
     if dados:
         n     = len(dados)
         chart = BarChart(); chart.type='bar'; chart.style=10
@@ -638,6 +645,13 @@ def _build_resp(ws, df, col_resp, mapeamento, d_str, total):
         fc     = 'FF000000' if inativ else 'FFFFFFFF'
         for ci,val in enumerate([resp,coord,'⚠️ Inativo' if inativ else 'Ativo',q,pct],1):
             _c(ws,i,ci,val,_f(size=9,color=fc),ff,_a('center' if ci>2 else 'left'))
+    # Linha de TOTAL GERAL
+    tot_r = len(dados) + 3
+    total_resp = sum(q for _,q in dados)
+    pct_tot = '100%' if total else '0%'
+    ws.merge_cells(start_row=tot_r,start_column=1,end_row=tot_r,end_column=3)
+    for ci,val in enumerate(['TOTAL GERAL', '', '', total_resp, pct_tot],1):
+        _c(ws,tot_r,ci,val,_f(bold=True,size=9,color='FFFFFFFF'),FT,_a('center' if ci>3 else 'left'))
     leg = len(dados)+4
     ws.merge_cells(start_row=leg,start_column=1,end_row=leg,end_column=5)
     _c(ws,leg,1,'⚠️ Laranja claro = Responsável inativo no sistema',
