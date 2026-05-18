@@ -174,7 +174,7 @@ INATIVOS = {normalizar(n) for n in [
     "SCHEILA DE PAULA CORDEIRO","SUZANA MARIA LIMA BARROSO FELIX",
     "TAMIRIS CAMELO MELO LINO","TATIANA HAUBERT","THALYTA MARIA TORQUATO VITOR",
     "THIAGO GURGEL FREIRE LEITE","VICTOR MARTINS BARBOSA",
-    "VICTORIA FERREIRA ALONSO","VITORIA CAVALCANTE DOS SANTOS",
+    "VICTORIA FERREIRA ALONSO",
     "VITORIA DA SILVA FREITAS","WALESSA DIOGENES PEIXOTO DE ALENCAR",
     "WANDERLUCY CORREIA DE ALMEIDA","WELLINGTON PEREIRA DA ROCHA FILHO",
     "WELLINGTON RUBENS","WESLLEY MACEDO DE OLIVEIRA","WVENDEL SENA OLIVEIRA",
@@ -585,18 +585,8 @@ def _build_coord(ws, df, col_resp, mapeamento, d_str, total):
     for ci,lbl in enumerate(['COORDENADOR','PUBLICAÇÕES','% DO TOTAL'],1):
         _c(ws,2,ci,lbl,_f(True,10,'FFFFFFFF'),FH,_a('center'))
 
-    # Apenas coordenadores reais (não responsáveis auto-mapeados)
-    COORDS_REAIS = {
-        normalizar("CAMILLA GOES BARBOSA"),
-        normalizar("GABRIEL GIORGIO CICCHELERO"),
-        normalizar("HELANZIA DE ARAUJO XAVIER WICHAMNN"),
-        normalizar("JENIFFER ROSA BARBOSA DE SALES"),
-        normalizar("LUCIANE MODERNEL MENDES"),
-        normalizar("MARCELLE LEITE RENTROIA"),
-        normalizar("NAYANDERSON LUAN MELLO PINHEIRO"),
-        normalizar("SUZANA MARIA CAMPOS MARANHAO DE LIMA"),
-        normalizar("YURI ALVES BARROS DOS SANTOS"),
-    }
+    # Apenas coordenadores reais — usa a lista canônica para evitar duplicação
+    COORDS_REAIS = {normalizar(c) for c in COORDENADORES_CONHECIDOS}
 
     ct = {}
     if col_resp:
