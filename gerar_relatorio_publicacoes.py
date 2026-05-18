@@ -609,9 +609,9 @@ def _build_coord(ws, df, col_resp, mapeamento, d_str, total):
     tot_row = len(dados) + 3
     total_coord = sum(q for _,q in dados)
     pct_total = '100%' if total else '0%'
-    ws.merge_cells(start_row=tot_row,start_column=1,end_row=tot_row,end_column=1)
-    for ci,val in enumerate(['TOTAL GERAL', total_coord, pct_total],1):
-        _c(ws,tot_row,ci,val,_f(bold=True,size=9,color='FFFFFFFF'),FT,_a('center' if ci>1 else 'left'))
+    _c(ws,tot_row,1,'TOTAL GERAL',_f(bold=True,size=9,color='FFFFFFFF'),FT,_a('left'))
+    _c(ws,tot_row,2,total_coord,  _f(bold=True,size=9,color='FFFFFFFF'),FT,_a('center'))
+    _c(ws,tot_row,3,pct_total,    _f(bold=True,size=9,color='FFFFFFFF'),FT,_a('center'))
     if dados:
         n     = len(dados)
         chart = BarChart(); chart.type='bar'; chart.style=10
@@ -650,8 +650,9 @@ def _build_resp(ws, df, col_resp, mapeamento, d_str, total):
     total_resp = sum(q for _,q in dados)
     pct_tot = '100%' if total else '0%'
     ws.merge_cells(start_row=tot_r,start_column=1,end_row=tot_r,end_column=3)
-    for ci,val in enumerate(['TOTAL GERAL', '', '', total_resp, pct_tot],1):
-        _c(ws,tot_r,ci,val,_f(bold=True,size=9,color='FFFFFFFF'),FT,_a('center' if ci>3 else 'left'))
+    _c(ws,tot_r,1,'TOTAL GERAL',_f(bold=True,size=9,color='FFFFFFFF'),FT,_a('left'))
+    _c(ws,tot_r,4,total_resp,   _f(bold=True,size=9,color='FFFFFFFF'),FT,_a('center'))
+    _c(ws,tot_r,5,pct_tot,      _f(bold=True,size=9,color='FFFFFFFF'),FT,_a('center'))
     leg = len(dados)+4
     ws.merge_cells(start_row=leg,start_column=1,end_row=leg,end_column=5)
     _c(ws,leg,1,'⚠️ Laranja claro = Responsável inativo no sistema',
