@@ -605,13 +605,11 @@ def _build_coord(ws, df, col_resp, mapeamento, d_str, total):
         pct = f'{q/total*100:.1f}%' if total else '0%'
         for ci,val in enumerate([c,q,pct],1):
             _c(ws,i,ci,val,_f(size=9,color='FFFFFFFF'),_fill(h),_a('center' if ci>1 else 'left'))
-    # Linha de TOTAL GERAL
+    # Linha de TOTAL GERAL — usa o total do dia (parâmetro), não só os mapeados
     tot_row = len(dados) + 3
-    total_coord = sum(q for _,q in dados)
-    pct_total = '100%' if total else '0%'
     _c(ws,tot_row,1,'TOTAL GERAL',_f(bold=True,size=9,color='FFFFFFFF'),FT,_a('left'))
-    _c(ws,tot_row,2,total_coord,  _f(bold=True,size=9,color='FFFFFFFF'),FT,_a('center'))
-    _c(ws,tot_row,3,pct_total,    _f(bold=True,size=9,color='FFFFFFFF'),FT,_a('center'))
+    _c(ws,tot_row,2,total,        _f(bold=True,size=9,color='FFFFFFFF'),FT,_a('center'))
+    _c(ws,tot_row,3,'100%' if total else '0%',_f(bold=True,size=9,color='FFFFFFFF'),FT,_a('center'))
     if dados:
         n     = len(dados)
         chart = BarChart(); chart.type='bar'; chart.style=10
