@@ -736,3 +736,4 @@ def gerar_relatorio(input_data, filename="", extra_mappings=None, divisao_especi
         "alanis_ativa":dia!='terca',"anna_julia_ativa":dia!='quinta',
         "alloc_counts":{a:len(v) for a,v in alloc.items()},
     }
+    
