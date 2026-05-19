@@ -4,8 +4,16 @@ Detecção de CNJ por nome (normalização robusta) e por conteúdo (fallback).
 """
 
 import io, re, unicodedata
-from datetime import date, datetime
-from zoneinfo import ZoneInfo
+from datetime import date, datetime, timezone, timedelta
+try:
+    from zoneinfo import ZoneInfo as _ZoneInfo
+    _BRASILIA = _ZoneInfo('America/Sao_Paulo')
+except ImportError:
+    try:
+        from pytz import timezone as _tz
+        _BRASILIA = _tz('America/Sao_Paulo')
+    except ImportError:
+        _BRASILIA = timezone(timedelta(hours=-3))  # UTC-3 fixo como último recurso
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
@@ -294,7 +302,7 @@ def _extrair_data(df, filename=""):
             pass
     # Fallback: usa a data atual no fuso de Brasília (o Streamlit Cloud roda em UTC).
     # A coluna "Data cadastro" NÃO é usada pois contém data de cadastro, não de emissão.
-    today = datetime.now(ZoneInfo('America/Sao_Paulo')).date()
+    today = datetime.now(_BRASILIA).date()
     return today, today.strftime('%d/%m/%Y')
 
 
