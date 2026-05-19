@@ -82,9 +82,10 @@ if unmapped_pending:
         st.rerun()
 
 st.divider()
+especial = st.checkbox("⚠️ Divisão Especial (exceção pontual — RESUMO em vermelho)", value=False)
 if st.button("▶ Gerar Relatório", type="primary", use_container_width=True):
     with st.spinner("Distribuindo publicações e gerando Excel..."):
-        output_bytes, resumo = gerar_relatorio(file_bytes, filename, st.session_state.extra_mappings)
+        output_bytes, resumo = gerar_relatorio(file_bytes, filename, st.session_state.extra_mappings, divisao_especial=especial)
     st.session_state.output_bytes = output_bytes
     st.session_state.resumo       = resumo
 
