@@ -291,15 +291,9 @@ def _extrair_data(df, filename=""):
             return d, d.strftime('%d/%m/%Y')
         except Exception:
             pass
-    col = _encontrar_coluna(df, ['Data cadastro','Data Cadastro','Data'])
-    if col:
-        try:
-            ds = pd.to_datetime(df[col], errors='coerce').dropna()
-            if len(ds):
-                d = ds.mode()[0].date()
-                return d, d.strftime('%d/%m/%Y')
-        except Exception:
-            pass
+    # Fallback: usa a data atual (data de emissão/processamento).
+    # A coluna "Data cadastro" contém a data de cadastro dos processos,
+    # não a data de emissão do relatório — não deve ser usada como fallback.
     today = date.today()
     return today, today.strftime('%d/%m/%Y')
 
@@ -591,7 +585,7 @@ def _build_coord(ws, df, col_resp, mapeamento, d_str, total):
     ct = {}
     if col_resp:
         for v in df[col_resp].dropna():
-            coord_raw = mapeamento.get(normalizar(str(v)))
+            coord_raw = mapeamento.get(normalizar(str(v).strip()))
             if coord_raw is None:
                 continue
             coord_norm = normalizar(coord_raw)
@@ -628,11 +622,19 @@ def _build_resp(ws, df, col_resp, mapeamento, d_str, total):
     ws.row_dimensions[1].height = 30
     for ci,lbl in enumerate(['RESPONSÁVEL','COORDENADOR','STATUS','TOTAL','%'],1):
         _c(ws,2,ci,lbl,_f(True,10,'FFFFFFFF'),FH,_a('center'))
-    ct = {}
+    # Conta publicações por responsável, agrupando variações de grafia pelo nome normalizado
+    ct_norm    = {}  # norm_key -> count
+    ct_display = {}  # norm_key -> nome original para exibição
     if col_resp:
         for v in df[col_resp].dropna():
-            n = str(v).strip(); ct[n] = ct.get(n,0)+1
-    dados = sorted(ct.items(),key=lambda x:-x[1])
+            raw = str(v).strip()
+            nk  = normalizar(raw)
+            if not nk: continue
+            ct_norm[nk]    = ct_norm.get(nk, 0) + 1
+            if nk not in ct_display:
+                ct_display[nk] = raw  # guarda o primeiro nome visto para exibição
+    ct    = {ct_display[k]: ct_norm[k] for k in ct_norm}
+    dados = sorted(ct.items(), key=lambda x: -x[1])
     cores = _grad(max(len(dados),1))
     for i,(resp,q) in enumerate(dados,3):
         norm   = normalizar(resp)
