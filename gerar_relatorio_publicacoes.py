@@ -4,7 +4,8 @@ Detecção de CNJ por nome (normalização robusta) e por conteúdo (fallback).
 """
 
 import io, re, unicodedata
-from datetime import date
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
@@ -291,10 +292,9 @@ def _extrair_data(df, filename=""):
             return d, d.strftime('%d/%m/%Y')
         except Exception:
             pass
-    # Fallback: usa a data atual (data de emissão/processamento).
-    # A coluna "Data cadastro" contém a data de cadastro dos processos,
-    # não a data de emissão do relatório — não deve ser usada como fallback.
-    today = date.today()
+    # Fallback: usa a data atual no fuso de Brasília (o Streamlit Cloud roda em UTC).
+    # A coluna "Data cadastro" NÃO é usada pois contém data de cadastro, não de emissão.
+    today = datetime.now(ZoneInfo('America/Sao_Paulo')).date()
     return today, today.strftime('%d/%m/%Y')
 
 
@@ -579,18 +579,12 @@ def _build_coord(ws, df, col_resp, mapeamento, d_str, total):
     for ci,lbl in enumerate(['COORDENADOR','PUBLICAÇÕES','% DO TOTAL'],1):
         _c(ws,2,ci,lbl,_f(True,10,'FFFFFFFF'),FH,_a('center'))
 
-    # Apenas coordenadores reais — usa a lista canônica para evitar duplicação
-    COORDS_REAIS = {normalizar(c) for c in COORDENADORES_CONHECIDOS}
-
     ct = {}
     if col_resp:
         for v in df[col_resp].dropna():
             coord_raw = mapeamento.get(normalizar(str(v).strip()))
             if coord_raw is None:
-                continue
-            coord_norm = normalizar(coord_raw)
-            if coord_norm not in COORDS_REAIS:
-                continue  # ignorar auto-mapeados que não são coordenadores
+                continue  # responsável sem nenhum mapeamento — omitir
             ct[coord_raw] = ct.get(coord_raw, 0) + 1
 
     dados = sorted(ct.items(), key=lambda x: -x[1])
