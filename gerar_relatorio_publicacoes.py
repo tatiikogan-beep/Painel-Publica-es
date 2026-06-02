@@ -54,16 +54,6 @@ COORDENADORES_MAPEADOS = {
 
     # ── HELANZIA DE ARAUJO XAVIER WICHAMNN ───────────────────────────────────
     normalizar("HELANZIA DE ARAUJO XAVIER WICHAMNN"):             "HELANZIA DE ARAUJO XAVIER WICHAMNN",
-    normalizar("ARTUR SARAIVA DE ANDRADE"):                       "JULIANA MIRELLA ALVES RODRIGUES",
-    normalizar("GUSTAVO LOPES ALENCAR FILHO"):                    "JULIANA MIRELLA ALVES RODRIGUES",
-    normalizar("KELIANE DE OLIVEIRA"):                            "JULIANA MIRELLA ALVES RODRIGUES",
-    normalizar("MARCELO LIMA ARRAIS"):                            "JULIANA MIRELLA ALVES RODRIGUES",
-    normalizar("NATALIA PAIVA DE PAULA"):                         "JULIANA MIRELLA ALVES RODRIGUES",
-    normalizar("ROBERTA RAYANNE VASCONCELOS BOTO"):               "JULIANA MIRELLA ALVES RODRIGUES",
-    normalizar("VICTOR EMANOEL FRADIQUE ACCIOLY FONTENELE"):      "JULIANA MIRELLA ALVES RODRIGUES",
-    normalizar("WELLINGTON PEREIRA DA ROCHA FILHO"):              "JULIANA MIRELLA ALVES RODRIGUES",
-    normalizar("RENAN PEREIRA DA SILVA"):                         "JULIANA MIRELLA ALVES RODRIGUES",
-    normalizar("VITORIA CAVALCANTE DOS SANTOS"):                  "JULIANA MIRELLA ALVES RODRIGUES",
 
     # ── JENIFFER ROSA BARBOSA DE SALES ───────────────────────────────────────
     normalizar("JENIFFER ROSA BARBOSA DE SALES"):                 "JENIFFER ROSA BARBOSA DE SALES",
@@ -71,14 +61,20 @@ COORDENADORES_MAPEADOS = {
 
     # ── JULIANA MIRELLA ALVES RODRIGUES ──────────────────────────────────────
     normalizar("JULIANA MIRELLA ALVES RODRIGUES"):                "JULIANA MIRELLA ALVES RODRIGUES",
+    normalizar("ARTHUR MASSARI"):                                 "JULIANA MIRELLA ALVES RODRIGUES",
+    normalizar("DANIEL BARROS DE OLIVEIRA"):                      "JULIANA MIRELLA ALVES RODRIGUES",
+    normalizar("GUSTAVO LOPES ALENCAR FILHO"):                    "JULIANA MIRELLA ALVES RODRIGUES",
+    normalizar("KELIANE DE OLIVEIRA"):                            "JULIANA MIRELLA ALVES RODRIGUES",
+    normalizar("MONIQUE DE KAROLIN SILVA DA COSTA"):              "JULIANA MIRELLA ALVES RODRIGUES",
+    normalizar("NATALIA PAIVA DE PAULA"):                         "JULIANA MIRELLA ALVES RODRIGUES",
+    normalizar("ROBERTA RAYANNE VASCONCELOS BOTO"):               "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("THALLYS ANDERSON FERREIRA DE LIMA"):              "JULIANA MIRELLA ALVES RODRIGUES",
+    normalizar("VICTOR EMANOEL FRADIQUE ACCIOLY FONTENELE"):      "JULIANA MIRELLA ALVES RODRIGUES",
 
     # ── LUCIANE MODERNEL MENDES ───────────────────────────────────────────────
     normalizar("LUCIANE MODERNEL MENDES"):                        "LUCIANE MODERNEL MENDES",
     normalizar("ANTONIO EDUARDO GOES AGUIAR FILHO"):              "LUCIANE MODERNEL MENDES",
-    normalizar("EDUARDO BLASQUES MARTINE"):                       "LUCIANE MODERNEL MENDES",
-    normalizar("LAYLA EVELYN NASCIMENTO PINHEIRO"):               "LUCIANE MODERNEL MENDES",
-    normalizar("MATHEUS CAVALCANTI DE ARAUJO"):                   "LUCIANE MODERNEL MENDES",
+    normalizar("ERIKA PAULA SANTOS LIMA"):                        "LUCIANE MODERNEL MENDES",
     normalizar("SANE BORGES BORGOMONI"):                          "LUCIANE MODERNEL MENDES",
 
     # ── MARCELLE LEITE RENTROIA ───────────────────────────────────────────────
@@ -99,11 +95,10 @@ COORDENADORES_MAPEADOS = {
 
     # ── SUZANA MARIA CAMPOS MARANHAO DE LIMA ─────────────────────────────────
     normalizar("SUZANA MARIA CAMPOS MARANHAO DE LIMA"):           "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
-    normalizar("DANIEL BARROS DE OLIVEIRA"):                      "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
+    normalizar("EVILANY GABRIELA BRAGA PONTES"):                  "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
     normalizar("FRANCOISE CATHERINE SOUZA ALVES"):                "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
     normalizar("GIOVANNA CAMPOS PEREIRA"):                        "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
-    normalizar("JOHANN DANIEL DE OLIVEIRA INOCENCIO"):            "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
-    normalizar("LETICIA OLIVEIRA DA SILVA"):                      "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
+    normalizar("MATHEUS CAVALCANTI DE ARAUJO"):                   "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
     normalizar("TATIANE CARMO SANTA ROSA"):                       "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
 
     # ── TICIANNA PIRES DE SOUZA ───────────────────────────────────────────────
@@ -113,7 +108,6 @@ COORDENADORES_MAPEADOS = {
     normalizar("YURI ALVES BARROS DOS SANTOS"):                   "YURI ALVES BARROS DOS SANTOS",
     normalizar("LUIZ GUILHERME GONCALVES GIRAO"):                 "YURI ALVES BARROS DOS SANTOS",
 }
-
 COORDENADORES_CONHECIDOS = [
     "CAMILLA GOES BARBOSA",
     "GABRIEL GIORGIO CICCHELERO",
