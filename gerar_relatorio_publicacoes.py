@@ -288,11 +288,9 @@ def _carregar_df(data):
 
     # Fallback
     try:
-        data.seek(0)
-        return pd.read_excel(data)
+        return pd.read_excel(io.BytesIO(raw))
     except Exception:
-        data.seek(0)
-        return pd.read_excel(data, engine='openpyxl')
+        return pd.read_excel(io.BytesIO(raw), engine='openpyxl')
 
 
 def _extrair_data(df, filename=""):
