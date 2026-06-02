@@ -7,7 +7,7 @@ import io, re, unicodedata
 from datetime import date, datetime, timezone, timedelta
 try:
     from zoneinfo import ZoneInfo as _ZoneInfo
-    _BRASILIA = _ZoneInfo('America/Sao_Paulo')
+    _BRASILIA = _ZoneInfo('America/Sao_Paulo')h
 except ImportError:
     try:
         from pytz import timezone as _tz
@@ -106,6 +106,7 @@ COORDENADORES_MAPEADOS = {
 
     # ── YURI ALVES BARROS DOS SANTOS ─────────────────────────────────────────
     normalizar("YURI ALVES BARROS DOS SANTOS"):                   "YURI ALVES BARROS DOS SANTOS",
+    normalizar("JULIA MENEZES MORGADO"):                    "YURI ALVES BARROS DOS SANTOS",
     normalizar("LUIZ GUILHERME GONCALVES GIRAO"):                 "YURI ALVES BARROS DOS SANTOS",
 }
 COORDENADORES_CONHECIDOS = [
