@@ -90,29 +90,17 @@ NOMES_ANALISTAS = {
     'ANNA JULIA': 'Anna Júlia', 'ANA CECILIA': 'Ana Cecília', 'ALANIS': 'Alanis', 'TATIANA': 'Tatiana'
 }
 with st.expander("⚙️ Gerenciar Analistas", expanded=False):
-    col_inc, col_exc = st.columns(2)
-    with col_inc:
-        st.markdown("**✅ Analistas incluídos na análise**")
-        analistas_incluidos = st.multiselect(
-            "Incluir analistas:",
-            options=TODOS_ANALISTAS,
-            default=[a for a in TODOS_ANALISTAS if a not in st.session_state.analistas_excluidos],
-            format_func=lambda x: NOMES_ANALISTAS.get(x, x),
-            key="ms_incluir",
-            label_visibility="collapsed"
-        )
-    with col_exc:
-        st.markdown("**❌ Analistas excluídos da análise**")
-        analistas_a_excluir = st.multiselect(
-            "Excluir analistas:",
-            options=TODOS_ANALISTAS,
-            default=st.session_state.analistas_excluidos,
-            format_func=lambda x: NOMES_ANALISTAS.get(x, x),
-            key="ms_excluir",
-            label_visibility="collapsed"
-        )
+    st.markdown("**✅ Analistas incluídos na análise**")
+    analistas_incluidos = st.multiselect(
+        "Analistas incluídos na análise:",
+        options=TODOS_ANALISTAS,
+        default=[a for a in TODOS_ANALISTAS if a not in st.session_state.analistas_excluidos],
+        format_func=lambda x: NOMES_ANALISTAS.get(x, x),
+        key="ms_incluir",
+        label_visibility="collapsed"
+    )
     if st.button("🔄 Aplicar seleção de analistas"):
-        st.session_state.analistas_excluidos = analistas_a_excluir
+        st.session_state.analistas_excluidos = [a for a in TODOS_ANALISTAS if a not in analistas_incluidos]
         st.session_state.check_result = None
         st.rerun()
 
