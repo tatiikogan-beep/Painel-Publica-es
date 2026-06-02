@@ -14,7 +14,7 @@ st.title("⚖️ Divisão de Publicações Diárias")
 st.caption("Controladoria Jurídica · LegalOne")
 
 for k, v in [('extra_mappings',{}),('check_result',None),('last_filename',None),
-             ('output_bytes',None),('resumo',None)]:
+             ('output_bytes',None),('resumo',None),('analistas_excluidos',[])]:
     if k not in st.session_state: st.session_state[k] = v
 
 uploaded = st.file_uploader("Envie a planilha exportada do LegalOne (.xlsx)", type=['xlsx'],
@@ -82,10 +82,44 @@ if unmapped_pending:
         st.rerun()
 
 st.divider()
+
+# ── Painel de gestão de analistas ────────────────────────────────────────────
+TODOS_ANALISTAS = ['VANESSA','PALOMA','BARBARA','LARA','ANNA JULIA','ANA CECILIA','ALANIS','TATIANA']
+NOMES_ANALISTAS = {
+    'VANESSA': 'Vanessa', 'PALOMA': 'Paloma', 'BARBARA': 'Bárbara', 'LARA': 'Lara',
+    'ANNA JULIA': 'Anna Júlia', 'ANA CECILIA': 'Ana Cecília', 'ALANIS': 'Alanis', 'TATIANA': 'Tatiana'
+}
+with st.expander("⚙️ Gerenciar Analistas", expanded=False):
+    col_inc, col_exc = st.columns(2)
+    with col_inc:
+        st.markdown("**✅ Analistas incluídos na análise**")
+        analistas_incluidos = st.multiselect(
+            "Incluir analistas:",
+            options=TODOS_ANALISTAS,
+            default=[a for a in TODOS_ANALISTAS if a not in st.session_state.analistas_excluidos],
+            format_func=lambda x: NOMES_ANALISTAS.get(x, x),
+            key="ms_incluir",
+            label_visibility="collapsed"
+        )
+    with col_exc:
+        st.markdown("**❌ Analistas excluídos da análise**")
+        analistas_a_excluir = st.multiselect(
+            "Excluir analistas:",
+            options=TODOS_ANALISTAS,
+            default=st.session_state.analistas_excluidos,
+            format_func=lambda x: NOMES_ANALISTAS.get(x, x),
+            key="ms_excluir",
+            label_visibility="collapsed"
+        )
+    if st.button("🔄 Aplicar seleção de analistas"):
+        st.session_state.analistas_excluidos = analistas_a_excluir
+        st.session_state.check_result = None
+        st.rerun()
+
 especial = st.checkbox("⚠️ Divisão Especial (exceção pontual — RESUMO em vermelho)", value=False)
 if st.button("▶ Gerar Relatório", type="primary", use_container_width=True):
     with st.spinner("Distribuindo publicações e gerando Excel..."):
-        output_bytes, resumo = gerar_relatorio(file_bytes, filename, st.session_state.extra_mappings, divisao_especial=especial)
+        output_bytes, resumo = gerar_relatorio(file_bytes, filename, st.session_state.extra_mappings, divisao_especial=especial, analistas_excluidos=st.session_state.analistas_excluidos)
     st.session_state.output_bytes = output_bytes
     st.session_state.resumo       = resumo
 
@@ -95,7 +129,7 @@ if st.session_state.output_bytes and st.session_state.resumo:
     st.subheader("Distribuição")
     NOMES = {'VANESSA':'Vanessa','PALOMA':'Paloma','BARBARA':'Bárbara','LARA':'Lara',
              'ANNA JULIA':'Anna Júlia','ANA CECILIA':'Ana Cecília','ALANIS':'Alanis','TATIANA':'Tatiana'}
-    ORDEM = ['VANESSA','PALOMA','BARBARA','LARA','ANNA JULIA','ANA CECILIA','ALANIS','TATIANA']
+    ORDEM = [a for a in ['VANESSA','PALOMA','BARBARA','LARA','ANNA JULIA','ANA CECILIA','ALANIS','TATIANA'] if a not in st.session_state.analistas_excluidos]
     rows = []
     for a in ORDEM:
         nome = NOMES.get(a, a)
