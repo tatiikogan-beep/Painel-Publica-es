@@ -7,7 +7,7 @@ import io, re, unicodedata
 from datetime import date, datetime, timezone, timedelta
 try:
     from zoneinfo import ZoneInfo as _ZoneInfo
-    _BRASILIA = _ZoneInfo('America/Sao_Paulo')h
+    _BRASILIA = _ZoneInfo('America/Sao_Paulo')
 except ImportError:
     try:
         from pytz import timezone as _tz
