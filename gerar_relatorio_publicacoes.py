@@ -382,11 +382,12 @@ def _grad(n, s='FF1F3864', e='FFA2D4FF'):
     return [r2(int(sr+(er-sr)*i/(n-1)),int(sg+(eg-sg)*i/(n-1)),int(sb+(eb-sb)*i/(n-1))) for i in range(n)]
 
 
-def _calcular_cotas(n, dia):
-    alanis = dia != 'terca'
-    aj     = dia != 'quinta'
-    full   = ['VANESSA','PALOMA','BARBARA','LARA']
-    half   = ['ANA CECILIA']
+def _calcular_cotas(n, dia, analistas_excluidos=None):
+    if analistas_excluidos is None: analistas_excluidos = []
+    alanis = dia != 'terca' and 'ALANIS' not in analistas_excluidos
+    aj     = dia != 'quinta' and 'ANNA JULIA' not in analistas_excluidos
+    full   = [a for a in ['VANESSA','PALOMA','BARBARA','LARA'] if a not in analistas_excluidos]
+    half   = [a for a in ['ANA CECILIA'] if a not in analistas_excluidos]
     if aj:     half.append('ANNA JULIA')
     if alanis: half.append('ALANIS')
     div_st = len(full) + len(half)*0.5
@@ -701,7 +702,7 @@ def pre_check(input_data, filename="", extra_mappings=None):
             "unmapped":sorted(set(un)),"inativos_encontrados":sorted(set(in_))}
 
 
-def gerar_relatorio(input_data, filename="", extra_mappings=None, divisao_especial=False):
+def gerar_relatorio(input_data, filename="", extra_mappings=None, divisao_especial=False, analistas_excluidos=None):
     if extra_mappings is None: extra_mappings = {}
     mp  = {**COORDENADORES_MAPEADOS, **{normalizar(k):v for k,v in extra_mappings.items()}}
     raw = input_data if isinstance(input_data,bytes) else input_data.read()
@@ -716,7 +717,8 @@ def gerar_relatorio(input_data, filename="", extra_mappings=None, divisao_especi
     uniq = len(df)
     d, ds = _extrair_data(df, filename)
     dia   = _dia_norm(d)
-    cotas = _calcular_cotas(uniq, dia)
+    if analistas_excluidos is None: analistas_excluidos = []
+    cotas = _calcular_cotas(uniq, dia, analistas_excluidos)
     alloc = _distribuir(df, cotas, cc, cn, cli)
     wb = Workbook(); wb.remove(wb.active)
     ws = wb.create_sheet('RESUMO')
