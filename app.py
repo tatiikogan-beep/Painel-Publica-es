@@ -4,7 +4,7 @@ app.py — Painel de Divisão de Publicações Diárias · Streamlit Cloud
 
 import re
 import pandas as pd
-import streamlit as sth
+import streamlit as st
 from gerar_relatorio_publicacoes import (
     pre_check, gerar_relatorio, COORDENADORES_CONHECIDOS
 )
