@@ -476,11 +476,11 @@ def _build_resumo(ws, d_str, dia_nome, total_bruto, total_unico, cotas, alloc,
     for i,a in enumerate(ORDEM):
         r    = r_tab+1+i
         fill = AF.get(a,FG)
-             if a=='ANNA JULIA' and dia=='quinta':
+        if a=='ANNA JULIA' and dia=='quinta':
             vals=['—','—','','⛔ Fora (quinta-feira)']; fill=FG
-             elif a not in cotas:
+        elif a not in cotas:
                              vals=['-','-','','⚪ Fora (cota ≤ 40)' if a=='TATIANA' else '']; fill=FG
-             else:
+        else:
             qtd  = len(alloc.get(a,[]))
             pct  = f'{qtd/total_unico*100:.1f}%' if total_unico else '0%'
             obs  = 'Prioridade GPM' if a=='BARBARA' else \
