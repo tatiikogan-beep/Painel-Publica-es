@@ -84,10 +84,10 @@ if unmapped_pending:
 st.divider()
 
 # ── Painel de gestão de analistas ────────────────────────────────────────────
-TODOS_ANALISTAS = ['VANESSA','PALOMA','BARBARA','LARA','ANNA JULIA','ANA CECILIA','ALANIS','TATIANA']
+TODOS_ANALISTAS = ['VANESSA','PALOMA','BARBARA','ANNA JULIA','ANA CECILIA','TATIANA']
 NOMES_ANALISTAS = {
-    'VANESSA': 'Vanessa', 'PALOMA': 'Paloma', 'BARBARA': 'Bárbara', 'LARA': 'Lara',
-    'ANNA JULIA': 'Anna Júlia', 'ANA CECILIA': 'Ana Cecília', 'ALANIS': 'Alanis', 'TATIANA': 'Tatiana'
+    'VANESSA': 'Vanessa', 'PALOMA': 'Paloma', 'BARBARA': 'Bárbara',
+    'ANNA JULIA': 'Anna Júlia', 'ANA CECILIA': 'Ana Cecília', 'TATIANA': 'Tatiana'
 }
 with st.expander("⚙️ Gerenciar Analistas", expanded=False):
     st.markdown("**✅ Analistas incluídos na análise**")
@@ -115,20 +115,18 @@ if st.session_state.output_bytes and st.session_state.resumo:
     resumo = st.session_state.resumo
     st.success(f"✅ Relatório gerado — {resumo['data_str']} ({resumo['dia_semana_nome']})")
     st.subheader("Distribuição")
-    NOMES = {'VANESSA':'Vanessa','PALOMA':'Paloma','BARBARA':'Bárbara','LARA':'Lara',
-             'ANNA JULIA':'Anna Júlia','ANA CECILIA':'Ana Cecília','ALANIS':'Alanis','TATIANA':'Tatiana'}
-    ORDEM = [a for a in ['VANESSA','PALOMA','BARBARA','LARA','ANNA JULIA','ANA CECILIA','ALANIS','TATIANA'] if a not in st.session_state.analistas_excluidos]
+    NOMES = {'VANESSA':'Vanessa','PALOMA':'Paloma','BARBARA':'Bárbara',
+             'ANNA JULIA':'Anna Júlia','ANA CECILIA':'Ana Cecília','TATIANA':'Tatiana'}
+    ORDEM = [a for a in ['VANESSA','PALOMA','BARBARA','ANNA JULIA','ANA CECILIA','TATIANA'] if a not in st.session_state.analistas_excluidos]
     rows = []
     for a in ORDEM:
         nome = NOMES.get(a, a)
-        if a=='ALANIS' and not resumo['alanis_ativa']:       rows.append((nome,"—","⛔ Fora (terça-feira)"))
-        elif a=='ANNA JULIA' and not resumo['anna_julia_ativa']: rows.append((nome,"—","⛔ Fora (quinta-feira)"))
+        if a=='ANNA JULIA' and not resumo['anna_julia_ativa']: rows.append((nome,"—","⛔ Fora (quinta-feira)"))
         elif a not in resumo['cotas']:
             if a=='TATIANA': rows.append((nome,"—","⚪ Fora (cota ≤ 40)"))
-        else:
             qtd = resumo['alloc_counts'].get(a,0)
             obs = ('✅ Incluída' if a=='TATIANA' else
-                   '50% da cota' if a in ('ALANIS','ANNA JULIA','ANA CECILIA') else
+                   '50% da cota' if a in ('ANNA JULIA','ANA CECILIA') else
                    'Prioridade GPM' if a=='BARBARA' else
                    'Prioridade não-trabalhista' if a=='PALOMA' else '🟢 Ativa')
             rows.append((nome, str(qtd), obs))
