@@ -363,10 +363,8 @@ AF = {
     'VANESSA':     _fill('FFB3D9FF'),
     'PALOMA':      _fill('FFC8F7C5'),
     'BARBARA':     _fill('FFFFE4B5'),
-    'LARA':        _fill('FFE8D5FF'),
     'ANNA JULIA':  _fill('FFFFD6D6'),
     'ANA CECILIA': _fill('FFFFE4F4'),
-    'ALANIS':      _fill('FFD6F0FF'),
     'TATIANA':     _fill('FFFFF0C0'),
 }
 
@@ -383,12 +381,10 @@ def _grad(n, s='FF1F3864', e='FFA2D4FF'):
 
 def _calcular_cotas(n, dia, analistas_excluidos=None):
     if analistas_excluidos is None: analistas_excluidos = []
-    alanis = dia != 'terca' and 'ALANIS' not in analistas_excluidos
     aj     = dia != 'quinta' and 'ANNA JULIA' not in analistas_excluidos
-    full   = [a for a in ['VANESSA','PALOMA','BARBARA','LARA'] if a not in analistas_excluidos]
+    full   = [a for a in ['VANESSA','PALOMA','BARBARA'] if a not in analistas_excluidos]
     half   = [a for a in ['ANA CECILIA'] if a not in analistas_excluidos]
     if aj:     half.append('ANNA JULIA')
-    if alanis: half.append('ALANIS')
     div_st = len(full) + len(half)*0.5
     q_st   = n/div_st if div_st else 0
     tat    = q_st > 40
@@ -418,14 +414,14 @@ def _distribuir(df, cotas, col_cnj, col_nat, col_cli):
                if normalizar(str(df.at[i,col_nat])) not in {'TRABALHISTA'}
                and str(df.at[i,col_nat]).strip()}
         nl  = [i for i in pool if i in nlt]
-        for a in ['ANNA JULIA','ANA CECILIA','PALOMA']:
+        for a in ['ANA CECILIA','ANNA JULIA','PALOMA']:
             if a not in cotas: continue
             need = cotas[a] - len(alloc[a])
             take = nl[:need]
             alloc[a].extend(take)
             nl   = nl[need:]
             pool = [i for i in pool if i not in set(take)]
-    for a in ['VANESSA','PALOMA','BARBARA','LARA','TATIANA','ANNA JULIA','ANA CECILIA','ALANIS']:
+    for a in ['VANESSA','PALOMA','BARBARA','TATIANA','ANNA JULIA','ANA CECILIA']:
         if a not in cotas or not pool: continue
         need = cotas[a] - len(alloc[a])
         if need > 0:
@@ -436,9 +432,9 @@ def _distribuir(df, cotas, col_cnj, col_nat, col_cli):
     return alloc
 
 
-NOMES = {'VANESSA':'VANESSA','PALOMA':'PALOMA','BARBARA':'BÁRBARA','LARA':'LARA',
-         'ANNA JULIA':'ANNA JÚLIA','ANA CECILIA':'ANA CECÍLIA','ALANIS':'ALANIS','TATIANA':'TATIANA'}
-ORDEM = ['VANESSA','PALOMA','BARBARA','LARA','ANNA JULIA','ANA CECILIA','ALANIS','TATIANA']
+NOMES = {'VANESSA':'VANESSA','PALOMA':'PALOMA','BARBARA':'BÁRBARA',
+         'ANNA JULIA':'ANNA JÚLIA','ANA CECILIA':'ANA CECÍLIA','TATIANA':'TATIANA'}
+ORDEM = ['VANESSA','PALOMA','BARBARA','ANNA JULIA','ANA CECILIA','TATIANA']
 
 
 def _build_resumo(ws, d_str, dia_nome, total_bruto, total_unico, cotas, alloc,
@@ -480,19 +476,17 @@ def _build_resumo(ws, d_str, dia_nome, total_bruto, total_unico, cotas, alloc,
     for i,a in enumerate(ORDEM):
         r    = r_tab+1+i
         fill = AF.get(a,FG)
-        if a=='ALANIS' and dia=='terca':
-            vals=['—','—','','⛔ Fora (terça-feira)']; fill=FG
-        elif a=='ANNA JULIA' and dia=='quinta':
+             if a=='ANNA JULIA' and dia=='quinta':
             vals=['—','—','','⛔ Fora (quinta-feira)']; fill=FG
-        elif a not in cotas:
-            vals=['—','—','','⚪ Fora (cota ≤ 40)' if a=='TATIANA' else '']; fill=FG
-        else:
+             elif a not in cotas:
+                             vals=['-','-','','⚪ Fora (cota ≤ 40)' if a=='TATIANA' else '']; fill=FG
+             else:
             qtd  = len(alloc.get(a,[]))
             pct  = f'{qtd/total_unico*100:.1f}%' if total_unico else '0%'
             obs  = 'Prioridade GPM' if a=='BARBARA' else \
                    'Prioridade não-trabalhista (50%)' if a in ('ANNA JULIA','ANA CECILIA') else \
                    'Prioridade não-trabalhista' if a=='PALOMA' else ''
-            stat = '✅ Incluída' if a=='TATIANA' else '50% da cota' if a in ('ALANIS','ANNA JULIA','ANA CECILIA') else '🟢 Ativa'
+            stat = '✅ Incluída' if a=='TATIANA' else '50% da cota' if a in ('ANNA JULIA','ANA CECILIA') else '🟢 Ativa'
             vals = [qtd,pct,obs,stat]
         row_vals = [NOMES.get(a,a)] + (vals if len(vals)==4 else [*vals,''])
         for ci,v in enumerate(row_vals,1):
@@ -747,7 +741,7 @@ def gerar_relatorio(input_data, filename="", extra_mappings=None, divisao_especi
     return out.getvalue(), {
         "data_str":ds,"dia_semana_nome":_dia_pt(d),"total_bruto":tot,"total_unico":uniq,
         "duplicatas":tot-uniq,"cotas":cotas,"tatiana_incluida":'TATIANA' in cotas,
-        "alanis_ativa":dia!='terca',"anna_julia_ativa":dia!='quinta',
+        "anna_julia_ativa":dia!='quinta',
         "alloc_counts":{a:len(v) for a,v in alloc.items()},
     }
     
