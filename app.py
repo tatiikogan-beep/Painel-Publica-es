@@ -4,7 +4,7 @@ app.py — Painel de Divisão de Publicações Diárias · Streamlit Cloud
 
 import re
 import pandas as pd
-import streamlit as st
+import streamlit as sth
 from gerar_relatorio_publicacoes import (
     pre_check, gerar_relatorio, COORDENADORES_CONHECIDOS
 )
@@ -124,6 +124,7 @@ if st.session_state.output_bytes and st.session_state.resumo:
         if a=='ANNA JULIA' and not resumo['anna_julia_ativa']: rows.append((nome,"—","⛔ Fora (quinta-feira)"))
         elif a not in resumo['cotas']:
             if a=='TATIANA': rows.append((nome,"—","⚪ Fora (cota ≤ 40)"))
+        else:
             qtd = resumo['alloc_counts'].get(a,0)
             obs = ('✅ Incluída' if a=='TATIANA' else
                    '50% da cota' if a in ('ANNA JULIA','ANA CECILIA') else
