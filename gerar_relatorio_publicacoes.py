@@ -33,6 +33,7 @@ def normalizar(s):
     s = s.upper()
     s = unicodedata.normalize('NFD', s)
     s = ''.join(c for c in s if unicodedata.category(c) != 'Mn')
+    s = re.sub(r'\s+', ' ', s)  # tabs, quebras de linha e demais espacos viram espaco simples
     while '  ' in s:
         s = s.replace('  ', ' ')
     return s.strip()
