@@ -39,6 +39,32 @@ def normalizar(s):
     return s.strip()
 
 
+# Rotulos/artefatos que NUNCA sao responsaveis (aparecem ao reprocessar um
+# relatorio gerado, cuja aba "POR RESPONSAVEL" tem rodape com TOTAL GERAL e
+# uma legenda). Tambem cobre cabecalhos da propria planilha.
+_ROTULOS_NAO_RESPONSAVEL = {normalizar(x) for x in [
+    'Responsavel','Responsável','RESPONSAVEL','Responsavel pelo processo',
+    'Coordenador','COORDENADOR','Data cadastro','Data Cadastro','Data',
+    'Natureza','Cliente','Status','Pasta','Numero de CNJ','Número de CNJ',
+    'CNJ','CJ','Nome','Total','TOTAL','Total geral','TOTAL GERAL','%',
+]}
+
+def _e_responsavel_valido(v):
+    """True se o valor parece um nome de responsavel real (nao rotulo/artefato)."""
+    raw = str(v).strip()
+    if len(raw) < 3:
+        return False
+    n = normalizar(raw)
+    if not n or n in _ROTULOS_NAO_RESPONSAVEL:
+        return False
+    # Descarta legendas/observacoes (ex.: "⚠️ Laranja claro = Responsável inativo...")
+    if 'LARANJA' in n or 'INATIVO NO SISTEMA' in n or n.startswith('TOTAL'):
+        return False
+    # Precisa conter ao menos uma letra (descarta numeros/simbolos puros)
+    if not any(c.isalpha() for c in n):
+        return False
+    return True
+
 COORDENADORES_MAPEADOS = {
     # ── CAMILLA GOES BARBOSA ──────────────────────────────────────────────────
     normalizar("CAMILLA GOES BARBOSA"):                           "CAMILLA GOES BARBOSA",
@@ -71,6 +97,7 @@ COORDENADORES_MAPEADOS = {
     normalizar("ROBERTA RAYANNE VASCONCELOS BOTO"):               "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("THALLYS ANDERSON FERREIRA DE LIMA"):              "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("VICTOR EMANOEL FRADIQUE ACCIOLY FONTENELE"):      "JULIANA MIRELLA ALVES RODRIGUES",
+    normalizar("MARCELO LIMA ARRAIS"):                        "JULIANA MIRELLA ALVES RODRIGUES",
 
     # ── LUCIANE MODERNEL MENDES ───────────────────────────────────────────────
     normalizar("LUCIANE MODERNEL MENDES"):                        "LUCIANE MODERNEL MENDES",
@@ -734,15 +761,11 @@ def pre_check(input_data, filename="", extra_mappings=None):
     if cc: df = df.drop_duplicates(subset=[cc])
     uniq = len(df)
     d, ds = _extrair_data(df, filename)
-    SKIP = {normalizar(c) for c in [
-        'Responsavel','Responsável','RESPONSAVEL','Data cadastro','Natureza',
-        'Cliente','Status','Pasta','Numero de CNJ','Número de CNJ','CNJ','CJ','Nome',
-    ]}
     un, in_ = [], []
     if cr:
         for v in df[cr].dropna().unique():
+            if not _e_responsavel_valido(v): continue
             n = normalizar(str(v))
-            if n in SKIP or len(str(v).strip()) < 3: continue
             if n in INATIVOS: in_.append(str(v).strip())
             if n not in mp:   un.append(str(v).strip())
     return {"data":d,"data_str":ds,"dia_semana":_dia_norm(d),"dia_semana_nome":_dia_pt(d),
@@ -774,18 +797,11 @@ def gerar_relatorio(input_data, filename="", extra_mappings=None, divisao_especi
     ws = wb.create_sheet('RESUMO')
     _build_resumo(ws, ds, _dia_pt(d), tot, uniq, cotas, alloc, dia, df, cn, cli, divisao_especial)
     # Calcular não mapeados e adicionar ao RESUMO
-    NOMES_COLUNA2 = {normalizar(c) for c in [
-        'Responsável','Responsavel','RESPONSAVEL','Responsavel pelo processo',
-        'Data cadastro','Data Cadastro','Natureza','Cliente','Status','Pasta',
-        'Numero de CNJ','Número de CNJ','CNJ','CJ','Data','Nome',
-    ]}
     _unmapped = []
     if cr:
         for val in df[cr].dropna().unique():
-            norm2 = normalizar(str(val))
-            if norm2 in NOMES_COLUNA2: continue
-            if len(str(val).strip()) < 3: continue
-            if norm2 not in mp:
+            if not _e_responsavel_valido(val): continue
+            if normalizar(str(val)) not in mp:
                 _unmapped.append(str(val).strip())
     _r_pendencias = ws.max_row + 2
     _add_pendencias_resumo(ws, sorted(set(_unmapped)), list(INATIVOS), _r_pendencias)
