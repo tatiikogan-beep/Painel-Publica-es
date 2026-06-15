@@ -35,6 +35,7 @@ if True:  # DIAG: recomputar sempre enquanto diagnosticamos
 result = st.session_state.check_result
 
 with st.expander('🔍 DIAGNOSTICO (temporario)', expanded=True):
+    st.write('Abas da planilha:', result.get('_diag_sheets'))
     st.write('Coluna detectada como Responsavel:', result.get('_diag_resp_col'))
     st.write('Todas as colunas:', result.get('_diag_cols'))
     st.write('Valores unicos na coluna detectada:', result.get('_diag_valores'))
