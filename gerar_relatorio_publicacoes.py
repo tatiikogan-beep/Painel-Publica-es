@@ -276,19 +276,42 @@ def _carregar_df(data):
     def _header_ok(df):
         return any(any(kw in normalizar(str(c)) for kw in KW) for c in df.columns)
 
+    def _tem_responsavel(df):
+        # Cabecalho contem explicitamente uma coluna de Responsavel (ancora confiavel)
+        return any('RESPONSAVEL' in normalizar(str(c)) for c in df.columns)
+
     def _primeira_linha_e_cabecalho(df):
         if df.empty: return False
         return any(any(kw in normalizar(str(v)) for kw in KW) for v in df.iloc[0])
 
-    for header_row in [0, 1, 2]:
-        try:
-            df = pd.read_excel(io.BytesIO(raw), header=header_row)
-            if _header_ok(df) and not _primeira_linha_e_cabecalho(df):
-                return df
-        except Exception:
-            pass
+    # Descobrir nomes das abas (pode ser um relatorio com varias abas, ex: RESUMO em primeiro)
+    try:
+        xls = pd.ExcelFile(io.BytesIO(raw))
+        sheets = xls.sheet_names
+    except Exception:
+        sheets = [0]
 
-    # Fallback
+    # 1a passada: procurar a aba+linha-cabecalho que tenha explicitamente coluna RESPONSAVEL
+    for sheet in sheets:
+        for header_row in [0, 1, 2]:
+            try:
+                df = pd.read_excel(io.BytesIO(raw), sheet_name=sheet, header=header_row)
+                if _tem_responsavel(df) and not _primeira_linha_e_cabecalho(df):
+                    return df
+            except Exception:
+                pass
+
+    # 2a passada: aceitar aba+linha com palavras-chave gerais de planilha de dados
+    for sheet in sheets:
+        for header_row in [0, 1, 2]:
+            try:
+                df = pd.read_excel(io.BytesIO(raw), sheet_name=sheet, header=header_row)
+                if _header_ok(df) and not _primeira_linha_e_cabecalho(df):
+                    return df
+            except Exception:
+                pass
+
+    # Fallback final: primeira aba como veio
     try:
         return pd.read_excel(io.BytesIO(raw))
     except Exception:
