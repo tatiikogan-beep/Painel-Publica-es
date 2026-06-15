@@ -689,7 +689,7 @@ def pre_check(input_data, filename="", extra_mappings=None):
             n = normalizar(str(v))
             if n in SKIP or len(str(v).strip()) < 3: continue
             if n in INATIVOS: in_.append(str(v).strip())
-            elif n not in mp: un.append(str(v).strip())
+            if n not in mp:   un.append(str(v).strip())
     return {"data":d,"data_str":ds,"dia_semana":_dia_norm(d),"dia_semana_nome":_dia_pt(d),
             "total_bruto":tot,"total_unico":uniq,"duplicatas":tot-uniq,
             "unmapped":sorted(set(un)),"inativos_encontrados":sorted(set(in_))}
@@ -728,7 +728,7 @@ def gerar_relatorio(input_data, filename="", extra_mappings=None, divisao_especi
             norm2 = normalizar(str(val))
             if norm2 in NOMES_COLUNA2: continue
             if len(str(val).strip()) < 3: continue
-            if norm2 not in INATIVOS and norm2 not in mp:
+            if norm2 not in mp:
                 _unmapped.append(str(val).strip())
     _r_pendencias = ws.max_row + 2
     _add_pendencias_resumo(ws, sorted(set(_unmapped)), list(INATIVOS), _r_pendencias)
