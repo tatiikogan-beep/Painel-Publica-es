@@ -268,7 +268,7 @@ def _encontrar_resp(df):
 
 
 def _carregar_df(data):
-    # Guardar bytes brutos para poder reler múltiplas vezes
+    # Guardar bytes brutos para poder reler multiplas vezes
     raw = data if isinstance(data, bytes) else data.read()
 
     KW = {'NATUREZA','RESPONSAVEL','CLIENTE','PASTA','STATUS','CADASTRO','CNJ','NUMERO'}
@@ -291,8 +291,36 @@ def _carregar_df(data):
     except Exception:
         sheets = [0]
 
+    # ── Deteccao de RELATORIO GERADO ──────────────────────────────────────
+    # Um relatorio gerado por este app contem abas estruturais (RESUMO,
+    # POR COORDENADOR, POR RESPONSAVEL) e abas por analista (VANESSA, PALOMA...).
+    # Nesse caso a unica fonte COMPLETA e confiavel de responsaveis e a aba
+    # "POR RESPONSAVEL", que consolida todos os responsaveis do dia. As abas
+    # por analista contem apenas um recorte (ex.: so a VANESSA) e NAO devem
+    # ser usadas para validacao, pois gerariam lista incompleta/incorreta.
+    sheets_norm = {normalizar(str(s)): s for s in sheets}
+    MARCADORES_RELATORIO = {'RESUMO', 'POR COORDENADOR', 'POR RESPONSAVEL'}
+    e_relatorio = len(MARCADORES_RELATORIO & set(sheets_norm.keys())) >= 2
+    if e_relatorio and 'POR RESPONSAVEL' in sheets_norm:
+        aba_resp = sheets_norm['POR RESPONSAVEL']
+        # Nessa aba a linha 0 e o titulo mesclado; o cabecalho real fica na linha 1.
+        for header_row in [1, 0, 2]:
+            try:
+                df = pd.read_excel(io.BytesIO(raw), sheet_name=aba_resp, header=header_row)
+                if _tem_responsavel(df) and not df.empty:
+                    return df
+            except Exception:
+                pass
+
+    # Abas que NUNCA sao dados brutos (estruturais do relatorio ou recortes por analista).
+    ABAS_IGNORAR = {normalizar(x) for x in [
+        'RESUMO', 'POR COORDENADOR', 'POR RESPONSAVEL',
+        'VANESSA', 'PALOMA', 'BARBARA', 'ANNA JULIA', 'ANA CECILIA', 'TATIANA',
+    ]}
+    sheets_dados = [s for s in sheets if normalizar(str(s)) not in ABAS_IGNORAR] or sheets
+
     # 1a passada: procurar a aba+linha-cabecalho que tenha explicitamente coluna RESPONSAVEL
-    for sheet in sheets:
+    for sheet in sheets_dados:
         for header_row in [0, 1, 2]:
             try:
                 df = pd.read_excel(io.BytesIO(raw), sheet_name=sheet, header=header_row)
@@ -302,7 +330,7 @@ def _carregar_df(data):
                 pass
 
     # 2a passada: aceitar aba+linha com palavras-chave gerais de planilha de dados
-    for sheet in sheets:
+    for sheet in sheets_dados:
         for header_row in [0, 1, 2]:
             try:
                 df = pd.read_excel(io.BytesIO(raw), sheet_name=sheet, header=header_row)
@@ -316,7 +344,6 @@ def _carregar_df(data):
         return pd.read_excel(io.BytesIO(raw))
     except Exception:
         return pd.read_excel(io.BytesIO(raw), engine='openpyxl')
-
 
 def _extrair_data(df, filename=""):
     m = re.search(r'(\d{2})[_.\-/](\d{2})[_.\-/](\d{2,4})', filename)
