@@ -28,7 +28,7 @@ if st.session_state.last_filename != filename:
         st.session_state[k] = {} if k=='extra_mappings' else None
     st.session_state.last_filename = filename
 
-if st.session_state.check_result is None:
+if st.session_state.check_result is None or '_diag_cols' not in (st.session_state.check_result or {}):
     with st.spinner("Analisando arquivo..."):
         result = pre_check(file_bytes, filename, st.session_state.extra_mappings)
     st.session_state.check_result = result
