@@ -28,18 +28,11 @@ if st.session_state.last_filename != filename:
         st.session_state[k] = {} if k=='extra_mappings' else None
     st.session_state.last_filename = filename
 
-if True:  # DIAG: recomputar sempre enquanto diagnosticamos
+if st.session_state.check_result is None:
     with st.spinner("Analisando arquivo..."):
         result = pre_check(file_bytes, filename, st.session_state.extra_mappings)
-    st.session_state.check_result = result
+        st.session_state.check_result = result
 result = st.session_state.check_result
-
-with st.expander('🔍 DIAGNOSTICO (temporario)', expanded=True):
-    st.write('Abas da planilha:', result.get('_diag_sheets'))
-    st.write('Coluna detectada como Responsavel:', result.get('_diag_resp_col'))
-    st.write('Todas as colunas:', result.get('_diag_cols'))
-    st.write('Valores unicos na coluna detectada:', result.get('_diag_valores'))
-
 
 st.divider()
 c1,c2,c3,c4 = st.columns(4)
