@@ -693,7 +693,9 @@ def pre_check(input_data, filename="", extra_mappings=None):
             if n not in mp:   un.append(str(v).strip())
     return {"data":d,"data_str":ds,"dia_semana":_dia_norm(d),"dia_semana_nome":_dia_pt(d),
             "total_bruto":tot,"total_unico":uniq,"duplicatas":tot-uniq,
-            "unmapped":sorted(set(un)),"inativos_encontrados":sorted(set(in_))}
+            "unmapped":sorted(set(un)),"inativos_encontrados":sorted(set(in_)),
+            "_diag_cols":[str(c) for c in df.columns],"_diag_resp_col":str(cr),
+            "_diag_valores":[str(v) for v in (df[cr].dropna().unique().tolist() if cr else [])]}
 
 
 def gerar_relatorio(input_data, filename="", extra_mappings=None, divisao_especial=False, analistas_excluidos=None):
