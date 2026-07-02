@@ -121,15 +121,13 @@ if st.session_state.output_bytes and st.session_state.resumo:
     rows = []
     for a in ORDEM:
         nome = NOMES.get(a, a)
-        if a=='ANNA JULIA' and not resumo['anna_julia_ativa']: rows.append((nome,"—","⛔ Fora (quinta-feira)"))
-        elif a not in resumo['cotas']:
+        if a not in resumo['cotas']:
             if a=='TATIANA': rows.append((nome,"—","⚪ Fora (cota ≤ 40)"))
         else:
             qtd = resumo['alloc_counts'].get(a,0)
             obs = ('✅ Incluída' if a=='TATIANA' else
-                   '50% da cota' if a in ('ANNA JULIA','ANA CECILIA') else
                    'Prioridade GPM' if a=='BARBARA' else
-                   'Prioridade não-trabalhista' if a=='PALOMA' else '🟢 Ativa')
+                   'Prioridade não-trabalhista' if a in ('ANNA JULIA','ANA CECILIA','PALOMA') else '🟢 Ativa')
             rows.append((nome, str(qtd), obs))
     st.dataframe(pd.DataFrame(rows, columns=["Analista","Publicações","Observação"]),
                  hide_index=True, use_container_width=True)

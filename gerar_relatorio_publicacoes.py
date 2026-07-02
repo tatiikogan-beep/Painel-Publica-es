@@ -457,22 +457,17 @@ def _grad(n, s='FF1F3864', e='FFA2D4FF'):
     return [r2(int(sr+(er-sr)*i/(n-1)),int(sg+(eg-sg)*i/(n-1)),int(sb+(eb-sb)*i/(n-1))) for i in range(n)]
 
 
-def _calcular_cotas(n, dia, analistas_excluidos=None):
+def _calcular_cotas(n, analistas_excluidos=None):
     if analistas_excluidos is None: analistas_excluidos = []
-    aj     = dia != 'quinta' and 'ANNA JULIA' not in analistas_excluidos
-    full   = [a for a in ['VANESSA','PALOMA','BARBARA'] if a not in analistas_excluidos]
-    half   = [a for a in ['ANA CECILIA'] if a not in analistas_excluidos]
-    if aj:     half.append('ANNA JULIA')
-    div_st = len(full) + len(half)*0.5
+    full   = [a for a in ['VANESSA','PALOMA','BARBARA','ANA CECILIA','ANNA JULIA'] if a not in analistas_excluidos]
+    div_st = len(full)
     q_st   = n/div_st if div_st else 0
     tat    = q_st > 40
     full   = full + (['TATIANA'] if tat else [])
-    div    = len(full) + len(half)*0.5
+    div    = len(full)
     q      = int(n/div) if div else 0
-    qh     = q//2
     cotas  = {a: q for a in full}
-    for a in half: cotas[a] = qh
-    left   = n - (len(full)*q + len(half)*qh)
+    left   = n - (len(full)*q)
     for a in full:
         if left <= 0: break
         cotas[a] += 1; left -= 1
@@ -554,17 +549,14 @@ def _build_resumo(ws, d_str, dia_nome, total_bruto, total_unico, cotas, alloc,
     for i,a in enumerate(ORDEM):
         r    = r_tab+1+i
         fill = AF.get(a,FG)
-        if a=='ANNA JULIA' and dia=='quinta':
-            vals=['—','—','','⛔ Fora (quinta-feira)']; fill=FG
-        elif a not in cotas:
-                             vals=['-','-','','⚪ Fora (cota ≤ 40)' if a=='TATIANA' else '']; fill=FG
+        if a not in cotas:
+            vals=['-','-','','⚪ Fora (cota ≤ 40)' if a=='TATIANA' else '']; fill=FG
         else:
             qtd  = len(alloc.get(a,[]))
             pct  = f'{qtd/total_unico*100:.1f}%' if total_unico else '0%'
             obs  = 'Prioridade GPM' if a=='BARBARA' else \
-                   'Prioridade não-trabalhista (50%)' if a in ('ANNA JULIA','ANA CECILIA') else \
-                   'Prioridade não-trabalhista' if a=='PALOMA' else ''
-            stat = '✅ Incluída' if a=='TATIANA' else '50% da cota' if a in ('ANNA JULIA','ANA CECILIA') else '🟢 Ativa'
+                   'Prioridade não-trabalhista' if a in ('ANNA JULIA','ANA CECILIA','PALOMA') else ''
+            stat = '✅ Incluída' if a=='TATIANA' else '🟢 Ativa'
             vals = [qtd,pct,obs,stat]
         row_vals = [NOMES.get(a,a)] + (vals if len(vals)==4 else [*vals,''])
         for ci,v in enumerate(row_vals,1):
@@ -785,7 +777,7 @@ def gerar_relatorio(input_data, filename="", extra_mappings=None, divisao_especi
     d, ds = _extrair_data(df, filename)
     dia   = _dia_norm(d)
     if analistas_excluidos is None: analistas_excluidos = []
-    cotas = _calcular_cotas(uniq, dia, analistas_excluidos)
+    cotas = _calcular_cotas(uniq, analistas_excluidos)
     alloc = _distribuir(df, cotas, cc, cn, cli)
     wb = Workbook(); wb.remove(wb.active)
     ws = wb.create_sheet('RESUMO')
@@ -808,7 +800,6 @@ def gerar_relatorio(input_data, filename="", extra_mappings=None, divisao_especi
     return out.getvalue(), {
         "data_str":ds,"dia_semana_nome":_dia_pt(d),"total_bruto":tot,"total_unico":uniq,
         "duplicatas":tot-uniq,"cotas":cotas,"tatiana_incluida":'TATIANA' in cotas,
-        "anna_julia_ativa":dia!='quinta',
         "alloc_counts":{a:len(v) for a,v in alloc.items()},
     }
     
