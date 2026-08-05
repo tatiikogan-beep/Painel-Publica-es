@@ -1,4 +1,11 @@
 streamlit
+# starlette é dependência transitiva do Streamlit (não usada diretamente
+# aqui), mas precisa ficar travada abaixo de 1.0: a partir da 1.x, o
+# GZipResponder passou a exigir um argumento novo (thread_minimum_size) que
+# o middleware interno do Streamlit ainda não passa — sem esse teto, um pip
+# install novo (ex.: redeploy) resolve a starlette mais recente e o app
+# derruba toda conexão com "Connection failed with status 500".
+starlette<1.0
 openpyxl
 pandas
 numpy
