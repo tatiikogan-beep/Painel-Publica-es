@@ -84,9 +84,9 @@ if unmapped_pending:
 st.divider()
 
 # ── Painel de gestão de analistas ────────────────────────────────────────────
-TODOS_ANALISTAS = ['VANESSA','PALOMA','BARBARA','ANNA JULIA','ANA CECILIA','TATIANA']
+TODOS_ANALISTAS = ['VANESSA','PALOMA','ANNA JULIA','ANA CECILIA','TATIANA']
 NOMES_ANALISTAS = {
-    'VANESSA': 'Vanessa', 'PALOMA': 'Paloma', 'BARBARA': 'Bárbara',
+    'VANESSA': 'Vanessa', 'PALOMA': 'Paloma',
     'ANNA JULIA': 'Anna Júlia', 'ANA CECILIA': 'Ana Cecília', 'TATIANA': 'Tatiana'
 }
 with st.expander("⚙️ Gerenciar Analistas", expanded=False):
@@ -115,9 +115,9 @@ if st.session_state.output_bytes and st.session_state.resumo:
     resumo = st.session_state.resumo
     st.success(f"✅ Relatório gerado — {resumo['data_str']} ({resumo['dia_semana_nome']})")
     st.subheader("Distribuição")
-    NOMES = {'VANESSA':'Vanessa','PALOMA':'Paloma','BARBARA':'Bárbara',
+    NOMES = {'VANESSA':'Vanessa','PALOMA':'Paloma',
              'ANNA JULIA':'Anna Júlia','ANA CECILIA':'Ana Cecília','TATIANA':'Tatiana'}
-    ORDEM = [a for a in ['VANESSA','PALOMA','BARBARA','ANNA JULIA','ANA CECILIA','TATIANA'] if a not in st.session_state.analistas_excluidos]
+    ORDEM = [a for a in ['VANESSA','PALOMA','ANNA JULIA','ANA CECILIA','TATIANA'] if a not in st.session_state.analistas_excluidos]
     rows = []
     for a in ORDEM:
         nome = NOMES.get(a, a)
@@ -126,7 +126,6 @@ if st.session_state.output_bytes and st.session_state.resumo:
         else:
             qtd = resumo['alloc_counts'].get(a,0)
             obs = ('✅ Incluída' if a=='TATIANA' else
-                   'Prioridade GPM' if a=='BARBARA' else
                    'Prioridade não-trabalhista' if a in ('ANNA JULIA','ANA CECILIA','PALOMA') else '🟢 Ativa')
             rows.append((nome, str(qtd), obs))
     st.dataframe(pd.DataFrame(rows, columns=["Analista","Publicações","Observação"]),
