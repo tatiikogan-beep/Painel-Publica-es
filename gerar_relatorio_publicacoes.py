@@ -440,7 +440,6 @@ FR = _fill('FF8B0000')  # divisão especial
 AF = {
     'VANESSA':     _fill('FFB3D9FF'),
     'PALOMA':      _fill('FFC8F7C5'),
-    'BARBARA':     _fill('FFFFE4B5'),
     'ANNA JULIA':  _fill('FFFFD6D6'),
     'ANA CECILIA': _fill('FFFFE4F4'),
     'TATIANA':     _fill('FFFFF0C0'),
@@ -459,7 +458,7 @@ def _grad(n, s='FF1F3864', e='FFA2D4FF'):
 
 def _calcular_cotas(n, analistas_excluidos=None):
     if analistas_excluidos is None: analistas_excluidos = []
-    full   = [a for a in ['VANESSA','PALOMA','BARBARA','ANA CECILIA','ANNA JULIA'] if a not in analistas_excluidos]
+    full   = [a for a in ['VANESSA','PALOMA','ANA CECILIA','ANNA JULIA'] if a not in analistas_excluidos]
     div_st = len(full)
     q_st   = n/div_st if div_st else 0
     tat    = q_st > 40
@@ -474,14 +473,9 @@ def _calcular_cotas(n, analistas_excluidos=None):
     return cotas
 
 
-def _distribuir(df, cotas, col_cnj, col_nat, col_cli):
+def _distribuir(df, cotas, col_cnj, col_nat):
     alloc = {a: [] for a in cotas}
     pool  = list(df.index)
-    if col_cli and 'BARBARA' in cotas:
-        gpm  = [i for i in pool if normalizar(str(df.at[i,col_cli])).startswith('GPM')]
-        take = gpm[:cotas['BARBARA']]
-        alloc['BARBARA'].extend(take)
-        pool = [i for i in pool if i not in set(take)]
     if col_nat:
         nlt = {i for i in pool
                if normalizar(str(df.at[i,col_nat])) not in {'TRABALHISTA'}
@@ -494,7 +488,7 @@ def _distribuir(df, cotas, col_cnj, col_nat, col_cli):
             alloc[a].extend(take)
             nl   = nl[need:]
             pool = [i for i in pool if i not in set(take)]
-    for a in ['VANESSA','PALOMA','BARBARA','TATIANA','ANNA JULIA','ANA CECILIA']:
+    for a in ['VANESSA','PALOMA','TATIANA','ANNA JULIA','ANA CECILIA']:
         if a not in cotas or not pool: continue
         need = cotas[a] - len(alloc[a])
         if need > 0:
@@ -505,9 +499,9 @@ def _distribuir(df, cotas, col_cnj, col_nat, col_cli):
     return alloc
 
 
-NOMES = {'VANESSA':'VANESSA','PALOMA':'PALOMA','BARBARA':'BÁRBARA',
+NOMES = {'VANESSA':'VANESSA','PALOMA':'PALOMA',
          'ANNA JULIA':'ANNA JÚLIA','ANA CECILIA':'ANA CECÍLIA','TATIANA':'TATIANA'}
-ORDEM = ['VANESSA','PALOMA','BARBARA','ANNA JULIA','ANA CECILIA','TATIANA']
+ORDEM = ['VANESSA','PALOMA','ANNA JULIA','ANA CECILIA','TATIANA']
 
 
 def _build_resumo(ws, d_str, dia_nome, total_bruto, total_unico, cotas, alloc,
@@ -554,8 +548,7 @@ def _build_resumo(ws, d_str, dia_nome, total_bruto, total_unico, cotas, alloc,
         else:
             qtd  = len(alloc.get(a,[]))
             pct  = f'{qtd/total_unico*100:.1f}%' if total_unico else '0%'
-            obs  = 'Prioridade GPM' if a=='BARBARA' else \
-                   'Prioridade não-trabalhista' if a in ('ANNA JULIA','ANA CECILIA','PALOMA') else ''
+            obs  = 'Prioridade não-trabalhista' if a in ('ANNA JULIA','ANA CECILIA','PALOMA') else ''
             stat = '✅ Incluída' if a=='TATIANA' else '🟢 Ativa'
             vals = [qtd,pct,obs,stat]
         row_vals = [NOMES.get(a,a)] + (vals if len(vals)==4 else [*vals,''])
@@ -778,7 +771,7 @@ def gerar_relatorio(input_data, filename="", extra_mappings=None, divisao_especi
     dia   = _dia_norm(d)
     if analistas_excluidos is None: analistas_excluidos = []
     cotas = _calcular_cotas(uniq, analistas_excluidos)
-    alloc = _distribuir(df, cotas, cc, cn, cli)
+    alloc = _distribuir(df, cotas, cc, cn)
     wb = Workbook(); wb.remove(wb.active)
     ws = wb.create_sheet('RESUMO')
     _build_resumo(ws, ds, _dia_pt(d), tot, uniq, cotas, alloc, dia, df, cn, cli, divisao_especial)
