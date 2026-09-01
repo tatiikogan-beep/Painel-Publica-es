@@ -90,7 +90,6 @@ COORDENADORES_MAPEADOS = {
     normalizar("JULIANA MIRELLA ALVES RODRIGUES"):                "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("ARTHUR MASSARI"):                                 "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("DANIEL BARROS DE OLIVEIRA"):                      "JULIANA MIRELLA ALVES RODRIGUES",
-    normalizar("GUSTAVO LOPES ALENCAR FILHO"):                    "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("KELIANE DE OLIVEIRA"):                            "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("MATHEUS CAVALCANTI DE ARAUJO"):                   "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("MONIQUE DE KAROLIN SILVA DA COSTA"):              "JULIANA MIRELLA ALVES RODRIGUES",
@@ -128,6 +127,7 @@ COORDENADORES_MAPEADOS = {
     normalizar("EVILANY GABRIELA BRAGA PONTES"):                  "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
     normalizar("FRANCOISE CATHERINE SOUZA ALVES"):                "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
     normalizar("GIOVANNA CAMPOS PEREIRA"):                        "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
+    normalizar("GUSTAVO LOPES ALENCAR FILHO"):                    "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
 
     # ── TICIANNA PIRES DE SOUZA ───────────────────────────────────────────────
     normalizar("TICIANNA PIRES DE SOUZA"):                        "TICIANNA PIRES DE SOUZA",
