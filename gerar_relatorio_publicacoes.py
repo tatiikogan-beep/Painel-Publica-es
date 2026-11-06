@@ -89,10 +89,13 @@ COORDENADORES_MAPEADOS = {
     # ── JULIANA MIRELLA ALVES RODRIGUES ──────────────────────────────────────
     normalizar("JULIANA MIRELLA ALVES RODRIGUES"):                "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("ARTHUR MASSARI"):                                 "JULIANA MIRELLA ALVES RODRIGUES",
+    normalizar("DACIO ESTEVAM VERAS"):                            "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("DANIEL BARROS DE OLIVEIRA"):                      "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("GUSTAVO LOPES ALENCAR FILHO"):                    "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("KELIANE DE OLIVEIRA"):                            "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("MONIQUE DE KAROLIN SILVA DA COSTA"):              "JULIANA MIRELLA ALVES RODRIGUES",
+    normalizar("NATALIA PAIVA DE PAULA"):                         "JULIANA MIRELLA ALVES RODRIGUES",
+    normalizar("PEDRO HENRIQUE DOS REIS ALVES"):                  "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("ROBERTA RAYANNE VASCONCELOS BOTO"):               "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("THALLYS ANDERSON FERREIRA DE LIMA"):              "JULIANA MIRELLA ALVES RODRIGUES",
     normalizar("VICTOR EMANOEL FRADIQUE ACCIOLY FONTENELE"):      "JULIANA MIRELLA ALVES RODRIGUES",
@@ -126,7 +129,6 @@ COORDENADORES_MAPEADOS = {
     normalizar("FRANCOISE CATHERINE SOUZA ALVES"):                "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
     normalizar("GIOVANNA CAMPOS PEREIRA"):                        "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
     normalizar("MATHEUS CAVALCANTI DE ARAUJO"):                   "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
-    normalizar("NATALIA PAIVA DE PAULA"):                         "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
     normalizar("TATIANE CARMO SANTA ROSA"):                       "SUZANA MARIA CAMPOS MARANHAO DE LIMA",
 
     # ── TICIANNA PIRES DE SOUZA ───────────────────────────────────────────────
